@@ -25,6 +25,31 @@ class AlbumRepository extends ServiceEntityRepository
         $q = $em->createQuery("SELECT a FROM \App\Entity\Album a WHERE LOWER(a.title) LIKE :value")
             ->setParameter('value', strtolower($value).'%');
 
-        return $q->getResult();
+        return $this->createAlbumsArray($q->getResult());
+    }
+
+    public function createAlbumsArray($result)
+    {
+        $albums = [];
+        if (is_array($result)) {
+            foreach ($result as $k => $value) {
+                $albums[$k]['id'] = $value->getId();
+                $albums[$k]['title'] = $value->getTitle();
+                $albums[$k]['year'] = $value->getYear();
+                $albums[$k]['genre'] = $value->getGenre();
+                $albums[$k]['artist'] = $value->getArtist()->getName();
+                $albums[$k]['band'] = $value->getBand();
+            }
+            return $albums;
+        } else {
+            return [
+                'id' => $result->getId(),
+                'title' => $result->getTitle(),
+                'year' => $result->getYear(),
+                'genre' => $result->getGenre(),
+                'band' => $result->getBand()
+            ];
+        }
+
     }
 }

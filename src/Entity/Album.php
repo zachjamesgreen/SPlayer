@@ -95,7 +95,7 @@ class Album
         return $this;
     }
 
-    public function getSongs(): ?string
+    public function getSongs()
     {
         return $this->songs;
     }
@@ -107,7 +107,7 @@ class Album
         return $this;
     }
 
-    public function getArtist(): ?string
+    public function getArtist()
     {
         return $this->artist;
     }

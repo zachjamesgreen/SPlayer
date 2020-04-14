@@ -41,6 +41,24 @@ class ArtistRepository extends ServiceEntityRepository
         $q = $em->createQuery("SELECT a FROM \App\Entity\Artist a WHERE LOWER(a.name) LIKE :value")
             ->setParameter('value', strtolower($value).'%');
 
-        return $q->getResult();
+        return $this->createArtistsArray($q->getResult());
+    }
+
+    public function createArtistsArray($result)
+    {
+        $artists = [];
+        if (is_array($result)) {
+            foreach ($result as $k => $value) {
+                $artists[$k]['id'] = $value->getId();
+                $artists[$k]['name'] = $value->getName();
+            }
+            return $artists;
+        } else {
+            return [
+                'id' => $result->getId(),
+                'name' => $result->getName(),
+            ];
+        }
+
     }
 }

@@ -54,12 +54,7 @@ class ApiController extends AbstractController
     {
         $album = $em->getRepository(Album::class)->find($id);
 
-        return $this->json([
-            'title' => $album->getTitle(),
-            'year' => $album->getYear(),
-            'genre' => $album->getGenre(),
-            'band' => $album->getBand()
-        ]);
+        return $this->json($em->getRepository(Album::class)->createAlbumsArray($album));
     }
 
     /**
@@ -68,16 +63,7 @@ class ApiController extends AbstractController
     public function albums(EntityManagerInterface $em)
     {
         $albums = $em->getRepository(Album::class)->findAll();
-        $a = [];
-        foreach ($albums as $key => $value) {
-            array_push($a,[
-                'title' => $value->getTitle(),
-                'year' => $value->getYear(),
-                'genre' => $value->getGenre(),
-                'band' => $value->getBand()
-            ]);
-
-        }
+        $a = $em->getRepository(Album::class)->createAlbumsArray($albums);
 
         return $this->json($a);
     }
@@ -89,17 +75,7 @@ class ApiController extends AbstractController
      {
          $artist = $em->getRepository(Artist::class)->find($artist_id);
          $albums = $em->getRepository(Album::class)->findByArtist($artist);
-
-         $a = [];
-         foreach ($albums as $key => $value) {
-             array_push($a,[
-                 'title' => $value->getTitle(),
-                 'year' => $value->getYear(),
-                 'genre' => $value->getGenre(),
-                 'band' => $value->getBand()
-             ]);
-
-         }
+         $a = $em->getRepository(Album::class)->createAlbumsArray($albums);
 
          return $this->json($a);
      }
@@ -109,15 +85,7 @@ class ApiController extends AbstractController
     public function artists(EntityManagerInterface $em)
     {
         $artists = $em->getRepository(Artist::class)->findAll();
-
-        $a = [];
-        foreach ($artists as $key => $value) {
-            array_push($a,[
-                'id' => $value->getId(),
-                'name' => $value->getName(),
-            ]);
-
-        }
+        $a = $em->getRepository(Artist::class)->createArtistsArray($artists);
 
         return $this->json($a);
     }
@@ -128,10 +96,7 @@ class ApiController extends AbstractController
     {
         $artist = $em->getRepository(Artist::class)->find($id);
 
-        return $this->json([
-            'id' => $artist->getId(),
-            'name' => $artist->getName(),
-        ]);
+        return $this->json($em->getRepository(Artist::class)->createArtistsArray($artist));
     }
     /**
      * @Route("/search")
@@ -139,28 +104,15 @@ class ApiController extends AbstractController
     public function search(Request $req, EntityManagerInterface $em)
     {
         $q = $req->query->get('q');
-        $a = [];
-        $al = [];
         $artists = $em->getRepository(Artist::class)->searchName($q);
         $albums = $em->getRepository(Album::class)->searchName($q);
         $songs = $em->getRepository(Song::class)->searchName($q);
-        foreach ($artists as $key => $value) {
-            array_push($a, [
-                'id' => $value->getId(),
-                'name' => $value->getName()
-            ]);
-        }
-        foreach ($albums as $key => $value) {
-            array_push($al, [
-                'id' => $value->getId(),
-                'title' => $value->getTitle(),
-                'year' => $value->getYear(),
-                'genre' => $value->getGenre(),
-                'band' => $value->getBand()
-            ]);
-        }
 
-        return $this->json([$a,$al,$songs]);
+        return $this->json([
+            'artists' => $artists,
+            'albums' => $albums,
+            'songs' => $songs
+        ]);
     }
 
 }

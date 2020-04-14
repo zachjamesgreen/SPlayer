@@ -71,11 +71,22 @@ class SongRepository extends ServiceEntityRepository
     {
         $songs = [];
         foreach ($result as $k => $v) {
+            $songs[$k]['id'] = $v->getId();
             $songs[$k]['name'] = $v->getName();
-            $songs[$k]['album'] = $v->getAlbum()->getTitle();
-            $songs[$k]['artist'] = $v->getArtist()->getName();
             $songs[$k]['track_number'] = $v->getTrackNumber();
             $songs[$k]['filename'] = $v->getFilename();
+            $songs[$k]['album'] = [
+                'id' => $v->getAlbum()->getId(),
+                'title' => $v->getAlbum()->getTitle(),
+                'artist' => [$v->getArtist()->getId(),$v->getArtist()->getName()],
+                'year' => $v->getAlbum()->getYear(),
+                'band' => $v->getAlbum()->getBand(),
+                'genre' => $v->getAlbum()->getGenre()
+            ];
+            $songs[$k]['artist'] = [
+                'id' => $v->getArtist()->getId(),
+                'name' => $v->getArtist()->getName()
+            ];
         }
         return $songs;
     }
