@@ -69,7 +69,7 @@ class UploadController extends AbstractController
             $em->flush();
 
 
-            // $fileName = $fu->upload($v, $fileName, $tags);
+            $fileName = $fu->upload($v, $fileName, $tags);
         }
         return $this->json($test);
     }
