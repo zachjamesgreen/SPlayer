@@ -6,8 +6,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
-// use App\Service\getId3;
-// use \GetId3\GetId3Core as GetId3;
 use App\Service\Tags;
 use App\Service\FileUpload;
 use App\Entity\Artist;

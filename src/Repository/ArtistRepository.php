@@ -27,7 +27,7 @@ class ArtistRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getResult();
-        
+
         if ($t) {
             return $t;
         } else {
@@ -35,32 +35,12 @@ class ArtistRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Artist[] Returns an array of Artist objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function searchName($value)
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $em = $this->getEntityManager();
+        $q = $em->createQuery("SELECT a FROM \App\Entity\Artist a WHERE LOWER(a.name) LIKE :value")
+            ->setParameter('value', strtolower($value).'%');
 
-    /*
-    public function findOneBySomeField($value): ?Artist
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $q->getResult();
     }
-    */
 }

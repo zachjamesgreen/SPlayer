@@ -60,7 +60,7 @@ class Song
         return $this;
     }
 
-    public function getArtist(): ?int
+    public function getArtist()
     {
         return $this->artist;
     }
@@ -72,7 +72,7 @@ class Song
         return $this;
     }
 
-    public function getAlbum(): ?int
+    public function getAlbum()
     {
         return $this->album;
     }
