@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 use \GetId3\GetId3Core as GetId3;
+use \App\Service\Converter;
 
 class Tags {
     /**
@@ -18,6 +19,7 @@ class Tags {
      * path to file
      */
     public $filePath;
+    public $format;
 
     public function __construct()
     {
@@ -26,6 +28,7 @@ class Tags {
 
     public function process($filePath)
     {
+        ini_set('mbstring.substitute_character', "none");
         $i = $this->getid3->analyze($filePath);
         $this->tags = $i['tags']['id3v2'];
         $this->t['artist'] = $this->getArtist();
@@ -94,13 +97,13 @@ class Tags {
     public function getYear()
     {
         if (isset($this->tags['year'])) {
-            try {
-                $d = new \DateTime($this->tags['year'][0]);
-                return $d->format('Y');
-            } catch (\Exception $e) {
-                return null;
-            }
-
+            return $this->tags['year'][0];
+            // try {
+            //     $d = new \DateTime($this->tags['year'][0]);
+            //     return $d->format('Y');
+            // } catch (\Exception $e) {
+            //     return null;
+            // }
         } else {
             return null;
         }

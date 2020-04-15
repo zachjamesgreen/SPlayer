@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\Tags;
 use App\Service\FileUpload;
+use \App\Service\Converter;
 use App\Entity\Artist;
 use App\Entity\Album;
 use App\Entity\Song;
@@ -30,14 +31,19 @@ class UploadController extends AbstractController
     {
         $test = [];
         $fs = $req->files->get('files');
+        $converter = new Converter();
         foreach ($fs as $k => $v) {
-            $tags = $t->process($v->getRealPath());
+            if ($v->getMimeType() != "audio/mpeg") {
+                $out = realpath("../tmp")."/".$v->getFileName();
+                $converter->convert($v->getRealPath(), $out);
+                $tags = $t->process($out);
+            } else {
+                $tags = $t->process($v->getRealPath());
+            }
             $fileName = "{$tags['title']}.{$v->guessExtension()}";
             $test[$k] = $fileName;
 
             $artist = $em->getRepository(Artist::class)->findOneByName($tags['artist']);
-            // echo print_r($artist === null);
-            // die;
             if ($artist === null) {
                 $artist = new Artist();
                 $artist->setName($tags['artist']);
@@ -70,6 +76,9 @@ class UploadController extends AbstractController
 
 
             $fileName = $fu->upload($v, $fileName, $tags);
+            if (isset($out)) {
+                unlink($out);
+            }
         }
         return $this->json($test);
     }

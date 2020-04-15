@@ -15,7 +15,7 @@ class FileUpload
         try {
             $file->move($this->setTargerDir($tags), $fileName);
         } catch (FileException $e) {
-            // ... handle exception if something happens during file upload
+            // handle exception if something happens during file upload
         }
 
         return $fileName;
